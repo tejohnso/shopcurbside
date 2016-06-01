@@ -13,16 +13,13 @@ function fetchid(id) {
     if (json.error) {throw new Error(json.error);}
     if (json.message) {console.log(json.message);}
     if (json.secret) {console.log(json.secret);}
-    if (json.nExt) {json.next = json.nExt;}
-    if (json.Next) {json.next = json.Next;}
-    if (json.neXt) {json.next = json.neXt;}
-    if (json.nexT) {json.next = json.nexT;}
-    if (json.next && json.next.length) {
-      if (!Array.isArray(json.next)) {json.next = [json.next];}
-      return json.next.reduce((prev, next)=>{
-        return prev.then(fetchid.bind(null, next));
-      }, Promise.resolve());
-    }
+    json.next = json.Next || json.nExt || json.neXt || json.nexT || json.next;
+    if (!json.next) {return;}
+    if (!Array.isArray(json.next)) {json.next = [json.next];}
+
+    return json.next.reduce((prev, next)=>{
+      return prev.then(fetchid.bind(null, next));
+    }, Promise.resolve());
   })
   .catch((err)=>{console.log(err);});
 }
